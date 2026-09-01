@@ -22,14 +22,19 @@ jobs:
           echo "Repository: $GITHUB_REPOSITORY"
           echo "Ref: $GITHUB_REF"
           echo "Actor: $GITHUB_ACTOR"
-          echo "OIDC token request URL is configured: ${ACTIONS_ID_TOKEN_REQUEST_URL:+yes}"
-          echo "OIDC token request token is configured: ${ACTIONS_ID_TOKEN_REQUEST_TOKEN:+yes}"
+          echo "OIDC URL: ${ACTIONS_ID_TOKEN_REQUEST_URL:+configured}"
+          echo "OIDC Token: ${ACTIONS_ID_TOKEN_REQUEST_TOKEN:+configured}"
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::932103793095:role/GitHubActionsS3Deploy
           aws-region: us-east-1
+          role-session-name: GitHubActionsSession
+
+      - name: Verify AWS identity
+        run: |
+          aws sts get-caller-identity
 
       - name: Deploy website to S3
         run: |
